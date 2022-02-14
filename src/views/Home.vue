@@ -3,9 +3,10 @@ import axios from "axios";
 export default {
   data: function () {
     return {
-      message: "This is the movies frontend! Not all movies have directors!",
+      message: "This is the movies frontend!",
       movies: [],
       newMovie: {},
+      currentMovie: {},
       changeMovie: {},
       showDirector: false,
     };
@@ -15,34 +16,47 @@ export default {
   },
   methods: {
     indexMovies: function () {
-      axios.get("http://localhost:3000/movies").then((response) => {
+      axios.get("/movies").then((response) => {
         console.log(response.data);
         this.movies = response.data;
       });
     },
     createMovie: function () {
       axios
-        .post("http://localhost:3000/movies", this.newMovie)
-        .then((response) => this.movies.unshift(response.data))
+        .post("/movies", this.newMovie)
+        .then((response) => {
+          console.log(response.data);
+          this.movies.unshift(response.data);
+        })
         .catch((error) => {
-          console.log(error.response);
+          console.log(error.response.data.errors);
         });
       this.newMovie = {};
     },
-    updateMovie: function () {
-      this.params = {
-        title: this.changeMovie.title,
-        director: this.changeMovie.director,
-        year: this.changeMovie.year,
-        plot: this.changeMovie.plot,
-      };
-      axios
-        .patch("http://localhost:3000/movies/" + this.changeMovie.id, this.params)
-        .then((response) => console.log(response.data))
-        .catch((error) => console.log(error.response));
+    showMovie: function (movie) {
+      console.log(movie);
+      this.currentMovie = movie;
+      this.changeMovie = movie;
+      document.querySelector("#movie-details").showModal();
     },
-    destroyMovie: function () {
-      axios.delete("http://localhost:3000/movies/" + this.changeMovie.id).then((response) => console.log(response));
+    updateMovie: function (movie) {
+      axios
+        .patch(`/movies/${movie.id}`, movie)
+        .then((response) => {
+          console.log("Update", response.data);
+        })
+        .catch((error) => {
+          console.log(error.response.data.errors);
+        });
+    },
+    destroyMovie: function (movie) {
+      if (confirm("Are you sure about this?")) {
+        axios.delete(`/movies/${movie.id}`).then((response) => {
+          console.log("Deleted", response.data);
+          var index = this.movies.indexOf(movie);
+          this.movies.splice(index, 1);
+        });
+      }
     },
   },
 };
@@ -51,7 +65,36 @@ export default {
 <template>
   <div class="home">
     <h1>{{ message }}</h1>
+    <div v-for="movie in movies" v-bind:key="movie.id">
+      <h2>Movie: {{ movie.title }}</h2>
+      <button v-on:click="showMovie(movie)">Additional Info</button>
+    </div>
+    <dialog id="movie-details">
+      <form method="dialog">
+        <h2>Movie Info</h2>
+        <p>
+          Title:
+          <input type="text" v-model="changeMovie.title" />
+        </p>
+        <p>
+          Year:
+          <input type="text" v-model="changeMovie.year" />
+        </p>
+        <p>
+          Plot:
+          <input type="text" v-model="changeMovie.plot" />
+        </p>
+        <p>
+          Director:
+          <input type="text" v-model="changeMovie.director" />
+        </p>
+        <button v-on:click="updateMovie(currentMovie)">Update</button>
+        <button v-on:click="destroyMovie(currentMovie)">Destroy</button>
+        <button>Close</button>
+      </form>
+    </dialog>
     <h1>Create Movie</h1>
+    <p>{{ newMovie }}</p>
     <p>
       Title:
       <input type="text" v-model="newMovie.title" />
@@ -68,45 +111,11 @@ export default {
       Director:
       <input type="text" v-model="newMovie.director" />
     </p>
-    <button v-on:click="createMovie()">Create</button>
-    <div v-for="movie in movies" v-bind:key="movie.id">
-      <h2>Movie: {{ movie.title }}</h2>
-      <h4>Year: {{ movie.year }}</h4>
-      <h3>Plot: {{ movie.plot }}</h3>
-      <button v-on:click="showDirector = !showDirector">Show/Hide Director</button>
-      <p v-if="showDirector">{{ movie.director }}</p>
+    <div>
+      <button v-on:click="createMovie()">Create</button>
     </div>
     <div>
-      <h1>Update Movie</h1>
-      <p>
-        Id:
-        <input type="text" v-model="changeMovie.id" />
-      </p>
-      <p>
-        Title:
-        <input type="text" v-model="changeMovie.title" />
-      </p>
-      <p>
-        Year:
-        <input type="text" v-model="changeMovie.year" />
-      </p>
-      <p>
-        Plot:
-        <input type="text" v-model="changeMovie.plot" />
-      </p>
-      <p>
-        Director:
-        <input type="text" v-model="changeMovie.director" />
-      </p>
-      <button v-on:click="updateMovie()">Commit</button>
-    </div>
-    <div>
-      <h1>Delete Movie</h1>
-      <p>
-        Id:
-        <input type="text" v-model="changeMovie.id" />
-      </p>
-      <button v-on:click="destroyMovie()">Delete Movie</button>
+      <button v-on:click="indexMovies()">Show Movies</button>
     </div>
   </div>
 </template>
