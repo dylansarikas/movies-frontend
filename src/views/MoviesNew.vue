@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
   data: function () {
     return {
-      newMovieParams: {},
+      newMovieParams: { title: "", year: "", director: "", plot: "" },
       errors: [],
     };
   },
@@ -13,7 +13,7 @@ export default {
         .post("/movies", this.newMovieParams)
         .then((response) => {
           console.log(response.data);
-          this.movies.unshift(response.data);
+          // this.movies.unshift(response.data);
         })
         .catch((error) => {
           this.errors = error.response.data.errors;
@@ -27,6 +27,7 @@ export default {
 <template>
   <div class="movies-new">
     <form v-on:submit.prevent="createMovie()">
+      newMovieParams: {{ newMovieParams }}
       <h1>New Movie</h1>
       <ul>
         <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
@@ -42,6 +43,9 @@ export default {
       <div>
         <label>Plot:</label>
         <input type="text" v-model="newMovieParams.plot" />
+        <br />
+        <small class="danger" v-if="newMovieParams.plot.length < 5">Must be at least 5 characters long!</small>
+        <small class="danger" v-if="newMovieParams.plot.length > 340">Must be less than 140 characters!</small>
       </div>
       <div>
         <label>Director:</label>
@@ -51,3 +55,9 @@ export default {
     </form>
   </div>
 </template>
+
+<style scoped>
+.danger {
+  color: rgb(171, 45, 45);
+}
+</style>
