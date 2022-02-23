@@ -33,23 +33,23 @@ export default {
         <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
       </ul>
       <div>
-        <label>Title:</label>
-        <input type="text" v-model="newMovieParams.title" />
+        <label for="title">Title:</label>
+        <input type="text" id="title" v-model="newMovieParams.title" />
       </div>
       <div>
-        <label>Year:</label>
-        <input type="text" v-model="newMovieParams.year" />
+        <label for="year">Year:</label>
+        <input type="text" id="year" v-model="newMovieParams.year" />
       </div>
       <div>
-        <label>Plot:</label>
-        <input type="text" v-model="newMovieParams.plot" />
+        <label for="plot">Plot:</label>
+        <input type="text" id="plot" v-model="newMovieParams.plot" />
         <br />
         <small class="danger" v-if="newMovieParams.plot.length < 5">Must be at least 5 characters long!</small>
         <small class="danger" v-if="newMovieParams.plot.length > 340">Must be less than 140 characters!</small>
       </div>
       <div>
-        <label>Director:</label>
-        <input type="text" v-model="newMovieParams.director" />
+        <label for="director">Director:</label>
+        <input type="text" id="director" v-model="newMovieParams.director" />
       </div>
       <input type="submit" value="Submit" />
     </form>

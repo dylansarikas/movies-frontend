@@ -30,8 +30,8 @@ export default {
 
 <template>
   <div class="movies-index">
-    <h1>All Movies</h1>
-    <p>
+    <h1 style="color: darkgreen">All Movies</h1>
+    <p style="color: lightcoral">
       Search:
       <input type="text" v-model="titleFilter" list="movieTitles" />
     </p>
@@ -47,7 +47,8 @@ export default {
     >
       <div v-for="movie in filteredMovies" v-bind:key="movie.id">
         <router-link v-bind:to="`/movies/${movie.id}`">
-          <h2>{{ movie.title }}</h2>
+          <h2 style="color: darkslateblue">{{ movie.title }}</h2>
+          <br />
         </router-link>
       </div>
     </transition-group>

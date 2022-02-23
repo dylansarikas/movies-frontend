@@ -64,14 +64,14 @@ export default {
 
 <template>
   <div class="home">
-    <h1>{{ message }}</h1>
+    <h1 style="font-size: 60px">{{ message }}</h1>
     <div v-for="movie in movies" v-bind:key="movie.id">
-      <h2>Movie: {{ movie.title }}</h2>
+      <h2 style="color: goldenrod" title="I look like a nice potato chip">Movie: {{ movie.title }}</h2>
       <button v-on:click="showMovie(movie)">Additional Info</button>
     </div>
     <dialog id="movie-details">
       <form method="dialog">
-        <h2>Movie Info</h2>
+        <h2 style="color: mediumseagreen" title="I look like barf">Movie Info</h2>
         <p>
           Title:
           <input type="text" v-model="changeMovie.title" />
