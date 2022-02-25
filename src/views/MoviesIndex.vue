@@ -29,7 +29,25 @@ export default {
 </script>
 
 <template>
-  <div class="movies-index">
+  <h1 style="color: darkgreen">All Movies</h1>
+  <p style="color: lightcoral">
+    Search:
+    <input type="text" v-model="titleFilter" list="movieTitles" />
+  </p>
+  <div class="row">
+    <div class="col-sm-6" v-for="movie in movies" v-bind:key="movie.id">
+      <div class="card">
+        <div class="card-body">
+          <router-link v-bind:to="`/movies/${movie.id}`">
+            <h2 style="color: darkslateblue">{{ movie.title }}</h2>
+            <br />
+          </router-link>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="movies-index">
     <h1 style="color: darkgreen">All Movies</h1>
     <p style="color: lightcoral">
       Search:
@@ -52,5 +70,5 @@ export default {
         </router-link>
       </div>
     </transition-group>
-  </div>
+  </div> -->
 </template>
